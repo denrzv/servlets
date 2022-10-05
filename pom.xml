@@ -30,7 +30,6 @@
         </dependency>
     </dependencies>
 
-
     <!--how to run: -> java -jar target/dependency/webapp-runner.jar target/*.war-->
     <build>
         <plugins>

@@ -6,16 +6,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 
 public class PostRepository {
   private List<Post> posts;
-  private final AtomicInteger counter;
+  private final AtomicLong counter;
   public PostRepository() {
     posts = new CopyOnWriteArrayList<>();
-    counter = new AtomicInteger(0);
+    counter = new AtomicLong(0);
   }
 
   public List<Post> all() {
@@ -37,7 +37,7 @@ public class PostRepository {
       posts.add(post);
     } else if(counter.get() >= post.getId()) {
       posts = posts.parallelStream()
-              .map(post_ -> post_.getId() == post.getId() ? post : post_)
+              .map(postItem -> postItem.getId() == post.getId() ? post : postItem)
               .collect(Collectors.toList());
     } else {
       return finalPost;

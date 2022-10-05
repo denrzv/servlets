@@ -35,7 +35,7 @@ public class MainServlet extends HttpServlet {
 
       if (method.equals(GET.toString()) && path.matches(URL + "/\\d+")) {
         // easy way
-        long parsedPath = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
+        long parsedPath = parseLong(path);
         controller.getById(parsedPath, resp);
         return;
       }
@@ -45,7 +45,7 @@ public class MainServlet extends HttpServlet {
       }
       if (method.equals(DELETE.toString()) && path.matches(URL + "/\\d+")) {
         // easy way
-        long parsedPath = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
+        long parsedPath = parseLong(path);
         controller.removeById(parsedPath, resp);
         return;
       }
@@ -54,6 +54,10 @@ public class MainServlet extends HttpServlet {
       e.printStackTrace();
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private Long parseLong(String path) {
+    return Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
   }
 }
 
