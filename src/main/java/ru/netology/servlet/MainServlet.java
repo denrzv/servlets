@@ -1,8 +1,8 @@
 package ru.netology.servlet;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import ru.netology.config.JavaConfig;
 import ru.netology.controller.PostController;
-import ru.netology.repository.PostRepository;
-import ru.netology.service.PostService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +16,8 @@ public class MainServlet extends HttpServlet {
 
   @Override
   public void init() {
-    final var repository = new PostRepository();
-    final var service = new PostService(repository);
-    controller = new PostController(service);
+    final var context = new AnnotationConfigApplicationContext(JavaConfig.class);
+    controller = context.getBean(PostController.class);
   }
 
   @Override
@@ -35,7 +34,7 @@ public class MainServlet extends HttpServlet {
 
       if (method.equals(GET.toString()) && path.matches(URL + "/\\d+")) {
         // easy way
-        long parsedPath = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
+        long parsedPath = parseLong(path);
         controller.getById(parsedPath, resp);
         return;
       }
@@ -45,7 +44,7 @@ public class MainServlet extends HttpServlet {
       }
       if (method.equals(DELETE.toString()) && path.matches(URL + "/\\d+")) {
         // easy way
-        long parsedPath = Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
+        long parsedPath = parseLong(path);
         controller.removeById(parsedPath, resp);
         return;
       }
@@ -54,6 +53,10 @@ public class MainServlet extends HttpServlet {
       e.printStackTrace();
       resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  private Long parseLong(String path) {
+    return Long.parseLong(path.substring(path.lastIndexOf("/") + 1));
   }
 }
 
